@@ -1,7 +1,7 @@
 /**
 * Minhash class - generates minhash signatures for set
 **/
-class MinHash {
+class Minhash {
     constructor(config) {
       // prime is the smallest prime larger than the largest
       // possible hash value (max hash = 32 bit int)
@@ -92,4 +92,4 @@ class MinHash {
  
 };
 
-export default MinHash;
+export default Minhash;

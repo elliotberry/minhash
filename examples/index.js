@@ -1,5 +1,7 @@
-var Minhash = require('../src/minhash.js');
-var LshIndex = require('../src/lsh.js');
+
+import LshIndex from '../src/lsh.js';
+import Minhash from '../src/minhash.js';
+
 
 var s1 = ['minhash', 'is', 'a', 'probabilistic', 'data', 'structure', 'for',
         'estimating', 'the', 'similarity', 'between', 'datasets'];

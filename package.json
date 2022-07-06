@@ -19,7 +19,7 @@
     "lsh",
     "text-mining"
   ],
-  "module": true,
+  "type": "module",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^8.2.5",
