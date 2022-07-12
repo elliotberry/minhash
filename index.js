@@ -1,7 +1,4 @@
-var Minhash = require('./src/minhash.js');
-var LshIndex = require('./src/lsh')
+import Minhash from "./src/minhash.js";
+import LshIndex from "./src/lsh";
 
-module.exports = {
-  Minhash,
-  LshIndex
-};
+export { Minhash, LshIndex };
