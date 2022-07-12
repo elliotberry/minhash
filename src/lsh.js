@@ -3,10 +3,9 @@
  **/
 
 class LshIndex {
-  constructor(args) {
-    
-  var args = args || {};
-  this.bandSize = args.bandSize || 4;
+  constructor(args={bandSize:4}) {
+  
+  this.bandSize = args.bandSize;
   this.index = {};
   }
 

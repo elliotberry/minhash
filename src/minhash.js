@@ -1,27 +1,28 @@
 /**
-* Minhash class - generates minhash signatures for set
-**/
+ * Minhash class - generates minhash signatures for set
+ **/
 class Minhash {
-    constructor(config) {
-      // prime is the smallest prime larger than the largest
-      // possible hash value (max hash = 32 bit int)
-      this.prime = 4294967311;
-      this.maxHash = 2 ** 32 - 1;
-       // initialize the minhash
-  var config = config || {};
-  this.numPerm = config.numPerm || 128;
-  this.seed = config.seed || 1;
-  this.hashvalues = [];
-  this.permA = [];
-  this.permB = [];
-  // share permutation functions across all minhashes
-  this.inithashvalues();
-  this.initPermutations();
-    }
+  constructor(config={numPerm: 128, seed:1}) {
+    
+    // prime is the smallest prime larger than the largest
+    // possible hash value (max hash = 32 bit int)
+    this.prime = 4294967311;
+    this.maxHash = 2 ** 32 - 1;
+
+    // initialize the minhash
+    this.numPerm = config.numPerm;
+    this.seed = config.seed;
+    this.hashvalues = [];
+    this.permA = [];
+    this.permB = [];
+    // share permutation functions across all minhashes
+    this.inithashvalues();
+    this.initPermutations();
+  }
 
   // initialize the hash values as the maximum value
   inithashvalues() {
-    for (let i=0; i<this.numPerm; i++) {
+    for (let i = 0; i < this.numPerm; i++) {
       this.hashvalues.push(this.maxHash);
     }
   }
@@ -30,9 +31,9 @@ class Minhash {
   // don't reuse any integers when making the functions
   initPermutations() {
     const used = {};
-    for (let i=0; i<2; i++) {
+    for (let i = 0; i < 2; i++) {
       const perms = [];
-      for (let j=0; j<this.numPerm; j++) {
+      for (let j = 0; j < this.numPerm; j++) {
         let int = this.randInt();
         while (used[int]) int = this.randInt();
         perms.push(int);
@@ -45,7 +46,7 @@ class Minhash {
 
   // the update function updates internal hashvalues given user data
   update(str) {
-    for (let i=0; i<this.hashvalues.length; i++) {
+    for (let i = 0; i < this.hashvalues.length; i++) {
       const a = this.permA[i];
       const b = this.permB[i];
       const hash = (a * this.hash(str) + b) % this.prime;
@@ -63,7 +64,7 @@ class Minhash {
     }
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash<<5)-hash)+char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // convert to a 32bit integer
     }
     return hash + this.maxHash;
@@ -77,7 +78,7 @@ class Minhash {
       throw new Error('seed values differ');
     }
     let shared = 0;
-    for (let i=0; i<this.hashvalues.length; i++) {
+    for (let i = 0; i < this.hashvalues.length; i++) {
       shared += this.hashvalues[i] == hashvalues[i];
     }
     return shared / this.hashvalues.length;
@@ -88,8 +89,6 @@ class Minhash {
     const x = Math.sin(this.seed++) * this.maxHash;
     return Math.floor((x - Math.floor(x)) * this.maxHash);
   }
-
- 
-};
+}
 
 export default Minhash;
