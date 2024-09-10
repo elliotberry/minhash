@@ -6,7 +6,7 @@ class Minhash {
     
     // prime is the smallest prime larger than the largest
     // possible hash value (max hash = 32 bit int)
-    this.prime = 4294967311;
+    this.prime = 4_294_967_311;
     this.maxHash = 2 ** 32 - 1;
 
     // initialize the minhash
@@ -65,7 +65,7 @@ class Minhash {
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
-      hash = hash & hash; // convert to a 32bit integer
+      hash &= hash; // convert to a 32bit integer
     }
     return hash + this.maxHash;
   }
