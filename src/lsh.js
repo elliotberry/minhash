@@ -3,48 +3,49 @@
  **/
 
 class LshIndex {
-  constructor(args={bandSize:4}) {
-  
-  this.bandSize = args.bandSize;
-  this.index = {};
+  constructor(args = { bandSize: 4 }) {
+    this.bandSize = args.bandSize;
+    this.index = {};
   }
 
-  insert(key, minhash) { 
+  insert(key, minhash) {
     const hashbands = this.getHashbands(minhash);
 
     hashbands.forEach(band => {
-      if (Array.isArray(this.index[band])) {
-        this.index[band].push(key);
-      } else {
-        this.index[band] = [key];
+      if (!this.index[band]) {
+        this.index[band] = [];
       }
+      this.index[band].push(key);
     });
-  };
+  }
 
- query(minhash) {
-    const matches = {};
+  query(minhash) {
+    const matches = new Set();
     const hashbands = this.getHashbands(minhash);
 
     hashbands.forEach(band => {
-      for (let j = 0; j < this.index[band].length; j++) {
-        matches[this.index[band][j]] = true;
+      if (this.index[band]) {
+        this.index[band].forEach(key => matches.add(key));
       }
     });
 
-    return Object.keys(matches);
-  };
+    return Array.from(matches);
+  }
 
   getHashbands(minhash) {
     if (minhash.hashbands) return minhash.hashbands;
-    minhash.hashbands = [];
-    for (let i = 0; i < minhash.hashvalues.length / this.bandSize; i++) {
-      const start = i * this.bandSize;
-      const end = start + this.bandSize;
-      const band = minhash.hashvalues.slice(start, end);
-      minhash.hashbands.push(band.join('.'));
+    
+    const { hashvalues } = minhash;
+    const hashbands = [];
+
+    for (let i = 0; i < hashvalues.length; i += this.bandSize) {
+      const band = hashvalues.slice(i, i + this.bandSize).join('.');
+      hashbands.push(band);
     }
-    return minhash.hashbands;
-  };
-};
+    
+    minhash.hashbands = hashbands;
+    return hashbands;
+  }
+}
 
 export default LshIndex;
