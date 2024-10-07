@@ -5,44 +5,46 @@
 class LshIndex {
   constructor(args = { bandSize: 4 }) {
     this.bandSize = args.bandSize;
-    this.index = {};
+    this.index = new Map();
   }
 
   insert(key, minhash) {
     const hashbands = this.getHashbands(minhash);
 
-    hashbands.forEach(band => {
-      if (!this.index[band]) {
-        this.index[band] = [];
+    for (const band of hashbands) {
+      if (!this.index.has(band)) {
+        this.index.set(band, []);
       }
-      this.index[band].push(key);
-    });
+      this.index.get(band).push(key);
+    }
   }
 
   query(minhash) {
     const matches = new Set();
     const hashbands = this.getHashbands(minhash);
 
-    hashbands.forEach(band => {
-      if (this.index[band]) {
-        this.index[band].forEach(key => matches.add(key));
+    for (const band of hashbands) {
+      if (this.index.has(band)) {
+        for (const key of this.index.get(band)) {
+          matches.add(key);
+        }
       }
-    });
+    }
 
     return Array.from(matches);
   }
 
   getHashbands(minhash) {
     if (minhash.hashbands) return minhash.hashbands;
-    
+
     const { hashvalues } = minhash;
     const hashbands = [];
 
     for (let i = 0; i < hashvalues.length; i += this.bandSize) {
-      const band = hashvalues.slice(i, i + this.bandSize).join('.');
+      const band = hashvalues.subarray(i, i + this.bandSize).join('.');
       hashbands.push(band);
     }
-    
+
     minhash.hashbands = hashbands;
     return hashbands;
   }
